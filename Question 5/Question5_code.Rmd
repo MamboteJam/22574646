@@ -1,0 +1,69 @@
+---
+title: "Question 5_code"
+#output: html_document
+date: "2023-06-17"
+
+
+# ---------- General:
+RemovePreprintSubmittedTo: False  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: False             # Should sections (and thus figures and tables) be numbered?
+fontsize: 12pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+
+output:
+  html_document:
+    keep_tex: TRUE
+    #template: Tex/TexDefault.txt
+    fig_width: 4.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  This looks into which is the most profitable.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir ="~/Practical data science 2023/22574646/data/googleplay")
+library(tidyverse)
+library(purrr)
+library(ggplot2)
+library(lubridate)
+library(ggpubr)
+library(ggthemes)
+library(reshape2)
+
+```
+
+# Loading in the data
+
+This loads in the data.
+
+```{r googleplay store data}
+googleplaystore<-read.csv("googleplaystore.csv")
+
+```
+
+## Top five Apps
+
+This highlights that in order to have access to a broad customers (installations) but at the same time price highly, medical apps are the best way to go
+
+```{r top five apps, echo=FALSE}
+
+attach(googleplaystore) #so I can call the variables directly
+
+
+Paid_apps<-googleplaystore %>% filter(Type=="Paid") %>%select(-App) #filters for apps that are paid for
+top_five <- Paid_apps[order(Paid_apps$Installs,decreasing=T),][1:5,] #orders the data in decreasing order based on installs
+top_five #retruns the data 
+
+
+
+
+top_five_highest_price<- Paid_apps[order(Paid_apps$Price,decreasing=T),][1:5,] #orders the data in decreasing order based on installs
+top_five_highest_price #retuns the data 
+
+
+```

@@ -1,0 +1,74 @@
+---
+title: "Question 4"
+#output: html_document
+date: "2023-06-16"
+
+RemovePreprintSubmittedTo: FALSE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "None"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: FALSE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: FALSE            # This creates dynamic links to the papers in reference list.
+
+output:
+  html_document:
+    keep_tex: TRUE
+    #template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  The investigation concludes that what works in the streaming marketplace are shows for the majority of parts, although fast packed acton movies has some potential as well.
+---
+
+```{r setup, include=FALSE }
+knitr::opts_chunk$set( echo = TRUE)
+knitr::opts_knit$set(root.dir= "~/Practical data science 2023/22574646/data/netflix")
+
+
+#The libaries needed
+library(ggplot2)
+library(ggpubr)
+library(lubridate)
+library(tidyverse)
+library(reshape2)
+
+```
+
+# Loading The data
+
+I load the data in this chunk.
+
+```{r read in the data}
+credits<-read.csv("Credits.csv")
+titles<- read.csv("titles.csv")
+```
+
+# The graph for Movies versus shows
+
+The line graph below shows that on average shows outperform movies. However, movies had outperformed shows after 2020.
+
+```{r the titles}
+attach(titles)
+
+#plots whether show or movies are the best overtime
+
+titles %>%
+    ggplot(aes(colour=type))+geom_line(aes(x=release_year, y=tmdb_popularity), size=0.5)+
+    ggtitle("Trend over the years")+
+    labs(x="Popularity",y="Years")
+
+   
+```
+
+# Table showing top five
+
+If we had to look at it as a top five list, it seems that movies had performed better in 2022 mostly in action genres.
+
+```{r the top five}
+titles_summary<-titles %>% group_by(genres) %>% summarize(type,release_year,average_score= mean(tmdb_popularity, na.rm=T))
+arranged<-titles_summary[order(titles_summary$average_score,decreasing=T),] #ordering data into decreasing order
+top_five<-arranged[1:5,]
+top_five
+
+```

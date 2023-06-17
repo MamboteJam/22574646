@@ -1,0 +1,101 @@
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+title: "Understanding my code"
+#subtitle: "This will appear as Right Header"
+
+#documentclass: "elsarticle"
+
+
+# ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# --------- page margins:
+margin: 2.3 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g.
+# This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper.
+
+# --------- Line numbers
+linenumbers: FALSE # Used when submitting to journal
+
+
+# ---------- General:
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  Abstract to be written here. The abstract should not be too long and should provide the reader with a good understanding what you are writing about. Academic papers are not like novels where you keep the reader in suspense. To be effective in getting others to read your paper, be as open and concise about your findings here as possible. Ideally, upon reading your abstract, the reader should feel he / she must read your paper in entirety.
+---
+
+<!-- # Start Writing here: -->
+
+<!-- ############################## -->
+
+# Introduction \label{Introduction}
+
+This explains how I had tackled this assignment.
+
+# Question 1 {.unnumbered}
+
+Question 1.1 was on using the datasets to provide some insight into African countries. This was approached as follows:
+
+1.  The first question I summarized the data based on the grouping continent and location.
+2.   I used that to plot a bar graph and a scatter plot. The bar plot compares across the continents whilst the scatter plot succeeds to depict each individual country
+3.  It is important to note that this is only a summary. The graphs studies the variables of interest on a average.
+4.  Total deaths per million and new cases per million were the variable of interest. One would have expected given poverty rates and the poor health to see these surpass other regions but it wasn't the case.
+
+Question 1.2. was on providing insights into whether specific groupings had a different experience to others who did not possess those specific characteristic. This s how the question was approached:
+
+1.  The variables life expectancy was chosen. because it is suggestive of good health and a good health system
+2.  Firstly, a the mean is summarized for total cases per million and total deaths per million based on the groupings location. This is a new data which I call Summarized locations
+3.  I created a variable called criteria which was joined to the data. Essentially, it is a variable which looks at life expectancy of each country ( that is my chosen grouping variable) and gives it either a higher, smaller or medium depending on whether it is above or below the mean observed in the life expectancy in the data. All missing values are dropped
+4.  I used a density plot to observe the distributions between these two group.
+
+Question 1.3. required that I understand the effects of changes in hospital facilities to ICU admission. The question was addressed as follows:
+
+1.  I used the variables new_vaccines roll out and the ict weekly admissions
+2.   I firstly crreated a new table which dropped all the missing values and at the same calculated the days forgone since the first date present in the data.
+3.  It then plots this to show what the effects on weekly ict are if more days were taken to change it.
+
+# Question 2 
+
+This question required me to convince my friend that it is quite cold in England.
+
+1.  I summarized the data to see the overall trend
+2.   I then drew a histogram of the mean temperature which is symbolic of what a typical day in England would be. Based on the internet of what constitutes a warm weather, I judged the distribution based on this.
+
+# Question 3
+
+This question wanted a direct comparison between metallic and Coldplay. My approach was direct in this regard. I plotted some of their variables on a boxplot to compare how they distributed in general. In this way I distinguish between coldplays style and Mettalic's style.
+
+# Question 4
+
+This question asked of me to show some graphs and tables to illustrates what works and what does not work. I made use of a line graph and a table which returns the object which had performed better regardless of the years(although I feel that it would have been better to make a top of the top for each year, however I had hoped to achieve this with the line graph) to illustrate the two categories (movies and shows) and what would work best in the industry.
+
+# Question 5
+
+I simply aimed to show which genres are selling but at the same time have good ratings. by using tables.

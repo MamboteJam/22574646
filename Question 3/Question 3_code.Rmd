@@ -1,0 +1,85 @@
+---
+title: "Question 3"
+#output: html_document
+date: "2023-06-16"
+
+
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+#title: "Helping You Write Academic Papers in R using Texevier"
+#subtitle: "This will appear as Right Header"
+
+documentclass: "elsarticle"
+
+
+# ---------- General:
+RemovePreprintSubmittedTo: False  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: False            # Should sections (and thus figures and tables) be numbered?
+fontsize: 12pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: FALSE            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+ html_document:
+    keep_tex: TRUE
+    #template: Tex/TexDefault.txt
+    fig_width: 4.8 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  This report compares coldplay and mettalic's style of music. Coldplay's music attempts to be balanced across all genres while Mettalic puts more weight on other aspect of his music.
+---
+
+```{r setup, include=FALSE }
+knitr::opts_chunk$set( echo = TRUE)
+knitr::opts_knit$set(root.dir= "~/Practical data science 2023/22574646/data/Coldplay_vs_Metallica")
+
+
+#The libaries needed
+library(ggplot2)
+library(ggpubr)
+library(lubridate)
+library(tidyverse)
+library(reshape2)
+
+```
+
+# Loading The data
+
+I load the data in this chunk.
+
+```{r}
+coldplay<-read.csv("Coldplay.csv")
+metallica<- read.csv("metallica.csv")
+
+```
+
+# Exploring their styles: A summary
+
+The box plot below are displayed for danceability, energy, speechiness, acousticness, instrumentalness, liveness, and valence for coldplay and metallica. With respect to Coldplay's music, the distribution is generally quite skewed to the right for accousticness, liveness and instramentalness whilst the remaining variables are symmetrical. Overall, coldplay's music aims to giving listener a feel of everything. Metallica on the other hand (in blue), various alot on these variables across their album. Although, they are less big on enegry, acousticness and speechiness.
+
+```{r}
+
+#The pre-editing
+vec_coldplay<-colnames(coldplay)[-c(1,4,3,5,2,6,13,12,14)] #columns which are abandoned
+coldplay_trimmed<- select(coldplay,vec_coldplay) #selecting specific variables
+
+vec_metallica<-colnames(metallica)[-c(1,2,3,5,14,4,8)] #columns abandoned 
+metallica_trimmed<- select(metallica,vec_metallica) #selecting specific variables
+
+
+#For comparability sake (put them on one plot)
+par(mcol=c(2,2))
+boxplot(coldplay_trimmed,use.cols=TRUE,border="pink") #Drawing a boxplot for coldplay
+boxplot(metallica_trimmed,use.cols=T,border="blue",pars=list(boxwex=0.8)) #Drawing a boxplot for Metallica
+
+
+
+```

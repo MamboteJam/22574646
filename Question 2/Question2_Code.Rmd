@@ -1,0 +1,73 @@
+---
+title: "Question 2"
+#output: html_document
+date: "2023-06-16"
+
+# IMPORTANT: Change settings here, but DO NOT change the spacing.
+# Remove comments and add values where applicable.
+# The descriptions below should be self-explanatory
+
+
+# ---------- General:
+RemovePreprintSubmittedTo: FALSE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "None"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: FALSE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: False            # This creates dynamic links to the papers in reference list.
+
+### Adding additional latex packages:
+# header-includes:
+#    - \usepackage{colortbl} # Add additional packages here.
+
+output:
+  html_document:
+    keep_tex: TRUE
+    #template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+ According to the internet, a warm day is around 20-24 degree celusiuis. I use this to inform my judgement on whether England was cold or warm. In turns out that it is quite cold hitting temparatures as low as -11.80. An normal day in england is in fact not so warm as the histogram shows below.
+ 
+---
+
+```{r setup, include=FALSE }
+knitr::opts_chunk$set( echo = TRUE)
+knitr::opts_knit$set(root.dir= "~/Practical data science 2023/22574646/data/London")
+
+
+#The libaries needed
+library(ggplot2)
+library(ggpubr)
+library(lubridate)
+library(tidyverse)
+library(reshape2)
+```
+
+#The code
+
+The summary statistics shows us that it can get pretty cold (-6.20 and -11.80). Compared to other places, it is not as warm (at only 37.90).s
+
+
+```{r Importing the data}
+
+london_weather<- read.csv ("london_weather.csv") #loads the data
+summary(london_weather) #summarizes the main statistics 
+
+
+```
+
+
+#A graph of what a typical london day looks like 
+On the internet it said that a cool day is around 20-24 degree's Celsius whilst anything above 29 is too hot. If one looks at a typical day in London (the temperature on average over the years), for the majority London is a cold country. The majority of the time it is called.
+
+
+
+```{r fig.height = 3, fig.width = 5}
+hist(london_weather$mean_temp, prob=T,col="lightblue",main= "Spread of average tempatures over the years",ylab="Probabilities",xlab="A Typical London day") #calculates the histograms
+lines(density(london_weather$mean_temp, na.rm = T),col=10,lwd=2) #adds the density function
+abline(v=20,col="red",lwd=3,lty=2) #adds the cutoff
+
+```
+

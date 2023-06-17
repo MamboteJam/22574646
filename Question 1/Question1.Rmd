@@ -1,0 +1,162 @@
+---
+# ---------- General:
+RemovePreprintSubmittedTo: False  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: FALSE                       # Add a table of contents
+numbersections: TRUE             # Should sections (and thus figures and tables) be numbered?
+fontsize: 12pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+
+title: "Question 1"
+
+output:
+  html_document:
+    keep_tex: TRUE
+    #template: Tex/TexDefault.txt
+    fig_width: 4.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+abstract: |
+  This investigates how Africa's experience differed from the other regions; it investgates what it means to have certain attributes as well as looks at what the implications should new vaccinations have been rolled out later.
+---
+
+```{r setup, include=FALSE }
+knitr::opts_chunk$set( echo = TRUE)
+knitr::opts_knit$set(root.dir= "~/Practical data science 2023/22574646/data/Covid")
+library(tidyverse)
+library(purrr)
+library(ggplot2)
+library(lubridate)
+library(ggpubr)
+library(ggthemes)
+library(reshape2)
+
+```
+
+# The main Data
+
+The main Data that I'll be working on are loaded in here.
+
+```{r Main datatsets}
+
+
+#loading in the main database I'll be using
+
+owid_covid_data <- read_csv("owid-covid-data.csv")#load in the data 
+
+attach(owid_covid_data) #attach data so don't have to call it each time
+
+
+```
+
+# The African experience
+
+Africa experienced lower deaths rates (Covid 19 deaths rates) and new cases than the other regions.
+
+```{r Africa Experience with covid-19}
+
+
+
+#The following code summarizes evidence that is grouped by locations and continent
+
+
+owid_sum<-owid_covid_data %>% group_by(continent) %>% summarise_at( vars(c(new_cases_per_million, new_deaths_per_million, total_deaths_per_million, total_deaths, total_cases, total_cases_per_million)), ~mean(.x,na.rm=T))
+
+
+Owid_summarized<- owid_covid_data %>% arrange(date) %>%group_by(location, continent) %>%  summarise_at(vars(c(new_cases_per_million, new_deaths_per_million, total_deaths_per_million, hospital_beds_per_thousand, total_cases,total_cases_per_million, weekly_hosp_admissions, weekly_hosp_admissions_per_million)),~mean(.x,na.rm=T))
+
+
+
+#Assign colours to different grouped positons
+cols<-c ("blue", "orange", "purple", "gold", "pink", "green","yellow") 
+
+
+#Draws a barplot of owid_sum
+
+
+g<-owid_sum %>% ggplot()+ geom_bar(stat="identity",aes(x=continent, y=new_cases_per_million),alpha=0.8)+
+    scale_color_manual(values=cols)
+
+g
+
+
+#Plot the graph for total deaths
+         
+plt<-Owid_summarized%>% group_by(continent) %>%ggplot()+
+    geom_point(aes(x=location, y=total_deaths_per_million,size=total_deaths_per_million, colour=continent))+
+    scale_color_manual(values = cols)+
+    theme(axis.title.x= element_blank(), axis.text.x =element_blank(),axis.ticks.x = element_blank(), axis.title.y = element_text("Total deaths per million"))+ ggtitle(label = "Overall pictures") 
+
+
+plt
+
+
+```
+
+#Do countries with higher life_expectancy display distinct patterns in the severity of their covid-19 experience
+
+Question: Do countries with higher life expectancy display distinct patterns in the severity of their covid-19 experience
+
+Motivation: life expectancy is suggestive of healthy population and good medical care hence, should show tendency of lower deaths rates
+
+Method: Distribution of death amongst those above the mean/ average life expectancy in the data and those below IT
+
+Findings: Both have tails to the right (skewed to the right), however, those whose life expectancy are higher than the average, have a flatter distribution than those whose life expectancy are smaller.
+
+Conclusion: I suspect it has to do something with good health care
+
+```{r Do countries with higher life expectancy display distinct patterns in the severity of their Covid experience}
+
+#idea is what is the mean in data and work around that for each variables 
+
+
+#I summarized the data by their locations for the variables totcal deaths and cases and life expec
+Summarized_locations<-owid_covid_data %>% group_by(location) %>% 
+    summarize_at(vars(c(total_cases_per_million,total_deaths_per_million, life_expectancy)),~mean(.x, na.rm=T))
+
+
+#I added columns which took the mean of the life expectancy from groups and made a criteria for those who are above it and those below it
+Ungrouped_mutated<-Summarized_locations %>% ungroup() %>% mutate(life_expect= mean( life_expectancy, na.rm=T)) %>%
+    mutate(criteria=ifelse(life_expectancy<life_expect, "smaller", ifelse(life_expectancy>life_expect, "higher", "middle"))) %>%
+    drop_na()
+
+
+#Plot the graphs
+Deaths<-Ungrouped_mutated %>% group_by(criteria) %>% ggplot(aes(x=total_deaths_per_million)) + geom_density(aes(fill=criteria))+
+    theme(title=element_text("Total deaths per million for two groups with different life expectancy"), axis.title.x= element_text("Total deaths per million"), axis.title.y =element_text("Probabilties"))
+
+Deaths
+
+```
+
+# How quickly different regions increased their hospitalization facilities and whether this led or lagged ICU admissions
+
+If they had not increased it fast enough, this wouldn't have resulted in low ICU admissions.
+
+```{r How quickly different regions increased their hospitalization facilities, and whether this led or lagged ICU admissions}
+
+#For this I used hospital bed per one thosuand and dates 
+
+#Calculate the data for new vaccines rollout and ict 
+
+
+#Create new data with the specfic variables I need and drop all the na's 
+Data3<-owid_covid_data %>% group_by(location) %>% select(iso_code, date, location, continent, new_vaccinations_smoothed_per_million, weekly_icu_admissions_per_million) %>%
+ mutate(lead_lags=ifelse(lead(weekly_icu_admissions_per_million)>weekly_icu_admissions_per_million,"leads","lags")) %>%
+     mutate(Time_passed=lead(date)-min(date)) %>%drop_na()
+
+
+
+#graphs the variables 
+attach(Data3)
+
+Data3 %>%
+ggplot()+geom_line(aes(x=as.numeric(Time_passed),y=weekly_icu_admissions_per_million,color=location), size=1)+
+    ggtitle(label="How quickly they update/ vaccine rollouts")+
+    xlab("Time passed")+
+    ylab("ICU admission")
+
+
+
+
+```
